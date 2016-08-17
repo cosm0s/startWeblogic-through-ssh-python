@@ -1,0 +1,10 @@
+[ssh]
+host=localhost
+port=22
+user=
+password=
+
+[weblogic]
+start.script = /home/user/Oracle/Middleware/Oracle_Home/user_projects/domains/base_domain/bin/startWebLogic.sh
+start.weblogic.username = weblogic
+start.weblogic.password = weblogic
