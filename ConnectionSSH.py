@@ -1,3 +1,5 @@
+import socket
+
 import ReadProperties, paramiko
 
 class ConnectionSSH:
@@ -17,8 +19,18 @@ class ConnectionSSH:
             self.ssh.connect(self.prop.get('ssh', 'host'), username=self.prop.get('ssh', 'user'), password=self.prop.get('ssh', 'password'), port=int(self.prop.get('ssh', 'port')))
             return self.ssh
         except paramiko.SSHException:
-            #Poner el resto de excepciones
-            return -1
+            print('Error connecting to host (%s)' % self.prop.get('ssh', 'host'))
+            print('Host is not a valid SSH server\nUsername is not valid or incorrect password')
+            quit()
+        except paramiko.ssh_exception.NoValidConnectionsError:
+            print('Connection Failed')
+            quit()
+        except socket.gaierror:
+            print('Socket not being to resolve the address (%s)' % self.prop.get('ssh', 'host'))
+            quit()
+        except TimeoutError:
+            print('The (%s) host didn\'t respond' % self.prop.get('ssh', 'host'))
+            quit()
 
     def close(self):
         self.ssh.close()
@@ -31,8 +43,3 @@ class ConnectionSSH:
             while channel.transport.is_active():
                 outputByte = channel.recv(self.bufferRecv)
                 yield outputByte.decode(encoding='UTF-8'), channel
-
-
-
-
-
